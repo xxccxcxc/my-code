@@ -1,0 +1,36 @@
+B
+D
+D
+B
+C
+C
+B
+B
+D
+A
+D
+C
+C
+B
+C
+AB
+BCD
+ABCDE
+AC
+BD
+102
+15
+8
+20
+2 5 6 3 4 7 1
+3 6 9 1 5 10 4 11 8 2 7
+n
+0
+stack2[top2]:=stack1[top1]
+stack1[top1]:=stack2[top2]
+top1-1
+[1][1]
+rowsum[i][0]=0
+rowsum[i][j-1]+matrix[i][j]
+area=0
+rowsum[i][last]-rowsum[i][first-1]

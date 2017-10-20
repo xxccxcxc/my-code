@@ -1,0 +1,36 @@
+B
+D
+B
+E
+A
+A
+A
+E
+B
+B
+B
+A
+B
+D
+A
+B
+B
+C
+D
+C
+2.04
+11
+-1
+mo
+8910
+Can't be divided  Can be divided  Can't be divided 
+m>0
+(-l*b+sqrt(m))/(2*a);
+3
+ABS(M)<0.0001
+-1*b/(2*a):0:3
+2
+i*m
+t=2*m
+(t*2)mod d
+solve(m)

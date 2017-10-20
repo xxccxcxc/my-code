@@ -1,0 +1,37 @@
+A
+D
+E
+C
+B
+B
+C
+D
+C
+A
+BC
+ACDE
+BCD
+D
+AC
+BE
+ADE
+ACD
+ABDE
+BCE
+10
+abdfgec
+263
+328
+1 4 2 1 3 3
+-400
+start+m-1
+result>=k
+not find
+2*k-i
+m-1
+0,-1
+a[x-1,y-1]
+a[x-1,y-1]
+d[2*i+1]
+a[x1,y1]=orig
+orig:=a[i,j]

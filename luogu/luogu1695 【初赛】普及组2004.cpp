@@ -1,0 +1,35 @@
+C
+B
+D
+C
+E
+A
+B
+D
+C
+A
+D
+C
+D
+E
+B
+C
+B
+D
+E
+D
+160
+10
+-80
+dog-is-clever
+263
+1 4 2 1 3 3
+a+b+c
+sqrt
+r
+2
+start+m-1
+result>=k
+not find
+2*k-i
+麻了个痹这105分难道是bug？？
