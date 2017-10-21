@@ -5,7 +5,7 @@
 #include <cstdio>
 using namespace std;
 int a[7][4][4];  // 1前2后3左4右5上6下
-// 此题上面是由下往上看的，所以旋转方向是反的 
+// 此题上面是由下往上看的，所以旋转方向是反的
 
 void rotate(int face, bool clock) {  // clock=true顺时针，false逆时针
     int b[4][4];
