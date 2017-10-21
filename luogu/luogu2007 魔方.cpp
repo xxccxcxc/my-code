@@ -4,10 +4,10 @@
 #include <cstring>
 #include <cstdio>
 using namespace std;
-int a[7][4][4];  // 1å‰2å3å·¦4å³5ä¸Š6ä¸‹
-// æ­¤é¢˜ä¸Šé¢æ˜¯ç”±ä¸‹å¾€ä¸Šçœ‹çš„ï¼Œæ‰€ä»¥æ—‹è½¬æ–¹å‘æ˜¯åçš„
+int a[7][4][4];  // 1Ç°2ºó3×ó4ÓÒ5ÉÏ6ÏÂ
+// ´ËÌâÉÏÃæÊÇÓÉÏÂÍùÉÏ¿´µÄ£¬ËùÒÔĞı×ª·½ÏòÊÇ·´µÄ 
 
-void rotate(int face, bool clock) {  // clock=trueé¡ºæ—¶é’ˆï¼Œfalseé€†æ—¶é’ˆ
+void rotate(int face, bool clock) {  // clock=trueË³Ê±Õë£¬falseÄæÊ±Õë
     int b[4][4];
     for (int j = 1; j <= 3; ++j)
         for (int k = 1; k <= 3; ++k)
