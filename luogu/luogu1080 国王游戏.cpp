@@ -6,65 +6,65 @@
 #include <algorithm>
 using namespace std;
 
-class Bigint{  //å¤§æ•´æ•°ç±»æ•°ç»„å®ç° 
+class Bigint{  //´óÕûÊıÀàÊı×éÊµÏÖ 
 private:
-    static const int MAXL = 20050;  //æ•°çš„æœ€å¤§ä½æ•° 
-    int len;  //æ•°çš„ä½æ•° 
-    int s[MAXL];  //æ­£åºä¿å­˜æ¯ä¸€ä½æ•°å­— 
-    bool sign;  //0ä¸ºè´Ÿ1ä¸ºæ­£
+    static const int MAXL = 20050;  //ÊıµÄ×î´óÎ»Êı 
+    int len;  //ÊıµÄÎ»Êı 
+    int s[MAXL];  //ÕıĞò±£´æÃ¿Ò»Î»Êı×Ö 
+    bool sign;  //0Îª¸º1ÎªÕı
 
 public:
     Bigint();
     Bigint(const char*);
     Bigint(string);
-    Bigint(int);  //æ„é€ å‡½æ•°
+    Bigint(int);  //¹¹Ôìº¯Êı
     
-    void print() const;  //æ‰“å°ç±»ä¿¡æ¯ç”¨äºè°ƒè¯• 
+    void print() const;  //´òÓ¡ÀàĞÅÏ¢ÓÃÓÚµ÷ÊÔ 
     
-    void clean();  //å»æ‰å‰å¯¼0åŠå¤„ç†-0çš„æƒ…å†µ 
+    void clean();  //È¥µôÇ°µ¼0¼°´¦Àí-0µÄÇé¿ö 
     
-    operator string() const;  //è½¬æ¢ä¸ºstringç±»å‹
+    operator string() const;  //×ª»»ÎªstringÀàĞÍ
     
-    friend istream& operator>>(istream&, Bigint&);  //é‡è½½è¾“å…¥æµ 
-    friend ostream& operator<<(ostream&, const Bigint&);  //é‡è½½è¾“å‡ºæµ
+    friend istream& operator>>(istream&, Bigint&);  //ÖØÔØÊäÈëÁ÷ 
+    friend ostream& operator<<(ostream&, const Bigint&);  //ÖØÔØÊä³öÁ÷
     
     Bigint& operator=(const char*);
     Bigint& operator=(string);
-    Bigint& operator=(int);  //é‡è½½èµ‹å€¼å‡½æ•° 
+    Bigint& operator=(int);  //ÖØÔØ¸³Öµº¯Êı 
     
     friend bool operator>(const Bigint&, const Bigint&);
     friend bool operator<(const Bigint&, const Bigint&);
     friend bool operator>=(const Bigint&, const Bigint&);
     friend bool operator<=(const Bigint&, const Bigint&);
     friend bool operator==(const Bigint&, const Bigint&);
-    friend bool operator!=(const Bigint&, const Bigint&);  //é‡è½½æ¯”è¾ƒ
+    friend bool operator!=(const Bigint&, const Bigint&);  //ÖØÔØ±È½Ï
     
-    Bigint operator-() const;  //å–ç›¸åæ•°
-    friend Bigint abs(const Bigint &);  //å–ç»å¯¹å€¼ 
+    Bigint operator-() const;  //È¡Ïà·´Êı
+    friend Bigint abs(const Bigint &);  //È¡¾ø¶ÔÖµ 
     
     friend Bigint operator+(const Bigint&, const Bigint&);
     Bigint operator+=(const Bigint&);
     Bigint operator++();
-    Bigint operator++(int);  //é‡è½½åŠ æ³• 
+    Bigint operator++(int);  //ÖØÔØ¼Ó·¨ 
     
     friend Bigint operator-(const Bigint&, const Bigint&);
     Bigint operator-=(const Bigint&);
     Bigint operator--();
-    Bigint operator--(int);  //é‡è½½å‡æ³• 
+    Bigint operator--(int);  //ÖØÔØ¼õ·¨ 
     
     friend Bigint operator*(const Bigint&, const Bigint&);
-    Bigint operator*=(const Bigint&);  //é‡è½½ä¹˜æ³•
+    Bigint operator*=(const Bigint&);  //ÖØÔØ³Ë·¨
     
     friend Bigint operator/(const Bigint&, const Bigint&);
-    Bigint operator/=(const Bigint&);  //é‡è½½é™¤æ³•
+    Bigint operator/=(const Bigint&);  //ÖØÔØ³ı·¨
     
     friend Bigint operator%(const Bigint&, const Bigint&);
-    Bigint operator%=(const Bigint&);  //é‡è½½å–ä½™ 
+    Bigint operator%=(const Bigint&);  //ÖØÔØÈ¡Óà 
     
-    friend Bigint factorial(const Bigint&);  //é˜¶ä¹˜
-    friend Bigint sqrt(const Bigint&);  //å¼€å¹³æ–¹æ ¹å‘ä¸‹å–æ•´ 
-    friend Bigint pow(const Bigint&, const Bigint&);  //æ¬¡æ–¹ 
-    friend Bigint devide(const Bigint&, int);  //é«˜ç²¾é™¤ä½ç²¾ 
+    friend Bigint factorial(const Bigint&);  //½×³Ë
+    friend Bigint sqrt(const Bigint&);  //¿ªÆ½·½¸ùÏòÏÂÈ¡Õû 
+    friend Bigint pow(const Bigint&, const Bigint&);  //´Î·½ 
+    friend Bigint devide(const Bigint&, int);  //¸ß¾«³ıµÍ¾« 
 };
 
 void Bigint::print() const{

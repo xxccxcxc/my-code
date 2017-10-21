@@ -10,7 +10,7 @@
 #include <queue>
 #include <stack>
 using namespace std;
-int n,m,s;//n鐗涚殑鎬绘暟锛宮鏈ㄦ澘鎬绘暟锛宻鐗涙鐨勬�绘暟 
+int n,m,s;//n牛的总数，m木板总数，s牛棚的总数 
 int a[201],b[201],ans;
 bool cmp(int ta,int tb)
 {

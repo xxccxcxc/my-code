@@ -12,8 +12,8 @@ struct Edge
 {
     int u;
     int v;
-    int f;  //å¯å¢åŠ çš„æµé‡ 
-    int c;  //è´¹ç”¨ 
+    int f;  //¿ÉÔö¼ÓµÄÁ÷Á¿ 
+    int c;  //·ÑÓÃ 
     int next;
 }edge[MAXM << 2];
 int n, m, s, t;
@@ -37,7 +37,7 @@ void addEdge(int u, int v, int f, int c)
     edge[e].next = head[u];
     head[u] = e++;
 }
-void add(int u, int v, int f, int c)  //åŠ å…¥æ­£å‘å’Œåå‘å¼§ 
+void add(int u, int v, int f, int c)  //¼ÓÈëÕıÏòºÍ·´Ïò»¡ 
 {
     addEdge(u, v, f, c);
     addEdge(v, u, 0, -c);
@@ -80,12 +80,12 @@ void MCMF(int &flow, int &cost)
     {
         int minFlow = INF;
         for (int i = pre[t]; ~i; i = pre[edge[i].u])
-            minFlow = min(minFlow, edge[i].f);  //å–æœ€å°å®¹é‡å¢å¹¿ 
+            minFlow = min(minFlow, edge[i].f);  //È¡×îĞ¡ÈİÁ¿Ôö¹ã 
         flow += minFlow;
         for (int i = pre[t]; ~i; i = pre[edge[i].u])
         {
             edge[i].f -= minFlow;
-            edge[i ^ 1].f += minFlow;  //i^1ä¸ºiçš„åå‘å¼§ 
+            edge[i ^ 1].f += minFlow;  //i^1ÎªiµÄ·´Ïò»¡ 
         }
         cost += dis[t] * minFlow;
     }

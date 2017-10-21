@@ -83,7 +83,7 @@ void insert(int num)
     splay(x, 0);
 }
 
-int get(int k, int to)  // æŠŠç¬¬kä¸ªèŠ‚ç‚¹æåˆ°toçš„ä½ç½®
+int get(int k, int to)  // °ÑµÚk¸ö½ÚµãÌáµ½toµÄÎ»ÖÃ
 {
     ++k;
     int x = root;

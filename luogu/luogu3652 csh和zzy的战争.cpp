@@ -44,7 +44,7 @@ int Network::SAP(int _n, int _s, int _t)
     return maxFlow;
 }
 
-void Network::SAP_bfs()  //åå‘bfsé¢„å¤„ç†é«˜åº¦ 
+void Network::SAP_bfs()  //·´ÏòbfsÔ¤´¦Àí¸ß¶È 
 {
     memset (h, -1, sizeof(h));
     memset (gap, 0, sizeof(gap));
@@ -68,10 +68,10 @@ void Network::SAP_bfs()  //åå‘bfsé¢„å¤„ç†é«˜åº¦
     }
 }
 
-int Network::SAP_dfs(int u, int surplus)  //surplusä¸ºç»“ç‚¹uçš„ç›ˆä½™ 
+int Network::SAP_dfs(int u, int surplus)  //surplusÎª½áµãuµÄÓ¯Óà 
 {
     if (u == t)return surplus;
-    int flow = 0;  //æˆåŠŸæµèµ°çš„æµé‡ 
+    int flow = 0;  //³É¹¦Á÷×ßµÄÁ÷Á¿ 
     for (int i = cur[u]; ~i; i = edge[i].next)
     {
         int v = edge[i].v;
@@ -81,12 +81,12 @@ int Network::SAP_dfs(int u, int surplus)  //surplusä¸ºç»“ç‚¹uçš„ç›ˆä½™
             edge[i].f -= nowFlow;
             edge[i ^ 1].f += nowFlow;
             flow += nowFlow;
-            if (edge[i].f)cur[u] = i;  //å½“å‰å¼§ä¼˜åŒ– 
+            if (edge[i].f)cur[u] = i;  //µ±Ç°»¡ÓÅ»¯ 
             if (flow == surplus)return flow;
         }
     }
-    if (!(--gap[h[u]]))h[s] = n;  //é—´éš™ä¼˜åŒ– 
-    ++gap[++h[u]];  //é‡æ ‡å· 
+    if (!(--gap[h[u]]))h[s] = n;  //¼äÏ¶ÓÅ»¯ 
+    ++gap[++h[u]];  //ÖØ±êºÅ 
     cur[u] = head[u];
     return flow;
 }

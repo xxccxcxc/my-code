@@ -13,7 +13,7 @@
 using namespace std;
 int T,n,ans;
 int dao[105],ss[105],shu[105][6],st[105][6],kg[105][1005];
-int zt[105][1005],dd[105];  //-2è¿˜æ²¡åˆ°ï¼Œ-1ç­‰å¾…ï¼Œ>=0çœ‹ä¹¦ 
+int zt[105][1005],dd[105];  //-2»¹Ã»µ½£¬-1µÈ´ı£¬>=0¿´Êé 
 int us[1005];
 int px[105];
 bool cmp(int t1,int t2)

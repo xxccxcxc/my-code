@@ -7,16 +7,16 @@ struct NodeS
 {
     int l, r, root;
     NodeS():l(0), r(0), root(0){}
-}s[MAXN*40];  //å¤–å±‚ä½ç½®çº¿æ®µæ ‘ 
+}s[MAXN*40];  //Íâ²ãÎ»ÖÃÏß¶ÎÊ÷ 
 struct NodeT
 {
     int l, r, cnt;
     NodeT():l(0), r(0), cnt(0){}
-}t[MAXN*400];  //å†…å±‚æƒå€¼çº¿æ®µæ ‘ 
+}t[MAXN*400];  //ÄÚ²ãÈ¨ÖµÏß¶ÎÊ÷ 
 int n, m, root, sTop = 1, tTop = 1;
 int a[MAXN], b[MAXN], bTop;
 
-void addT(int &cur, int x, int add, int l, int r)  //å†…å±‚æƒå€¼çº¿æ®µæ ‘æŠŠæ•°xçš„å‡ºçŽ°æ¬¡æ•°åŠ add
+void addT(int &cur, int x, int add, int l, int r)  //ÄÚ²ãÈ¨ÖµÏß¶ÎÊ÷°ÑÊýxµÄ³öÏÖ´ÎÊý¼Óadd
 {
     if (!cur) cur = tTop++;
     t[cur].cnt += add;
@@ -26,7 +26,7 @@ void addT(int &cur, int x, int add, int l, int r)  //å†…å±‚æƒå€¼çº¿æ®µæ ‘æŠŠæ•°
     else addT(t[cur].r, x, add, mid+1, r);
 }
 
-void addS(int &cur, int pos, int x, int add, int l, int r)  //å¤–å±‚ä½ç½®çº¿æ®µæ ‘æŠŠposä½xçš„å‡ºçŽ°æ¬¡æ•°åŠ add 
+void addS(int &cur, int pos, int x, int add, int l, int r)  //Íâ²ãÎ»ÖÃÏß¶ÎÊ÷°ÑposÎ»xµÄ³öÏÖ´ÎÊý¼Óadd 
 {
     if (!cur) cur = sTop++;
     addT(s[cur].root, x, add, L, R);
@@ -36,7 +36,7 @@ void addS(int &cur, int pos, int x, int add, int l, int r)  //å¤–å±‚ä½ç½®çº¿æ®µ
     else addS(s[cur].r, pos, x, add, mid+1, r);
 }
 
-void dfs(int cur, int l, int r, int curL, int curR)  //æ‰¾å‡ºä½ç½®çº¿æ®µæ ‘ä¸­ç»„åˆå‡º[l,r]çš„æ‰€æœ‰åŒºé—´ 
+void dfs(int cur, int l, int r, int curL, int curR)  //ÕÒ³öÎ»ÖÃÏß¶ÎÊ÷ÖÐ×éºÏ³ö[l,r]µÄËùÓÐÇø¼ä 
 {
     if (!cur) return;
     if (l == curL && r == curR)
@@ -49,7 +49,7 @@ void dfs(int cur, int l, int r, int curL, int curR)  //æ‰¾å‡ºä½ç½®çº¿æ®µæ ‘ä¸­ç
     if (r > mid) dfs(s[cur].r, max(l, mid+1), r, mid+1, curR);
 }
 
-int query1(int l, int r, int k)  //åœ¨lå’Œrçš„æ•°å­—åŒºé—´å†…æ‰¾ç¬¬kå¤§ 
+int query1(int l, int r, int k)  //ÔÚlºÍrµÄÊý×ÖÇø¼äÄÚÕÒµÚk´ó 
 {
     if (l == r) return l;
     int mid = (l+r)>>1, lCnt = 0;
@@ -69,7 +69,7 @@ int query1(int l, int r, int k)  //åœ¨lå’Œrçš„æ•°å­—åŒºé—´å†…æ‰¾ç¬¬kå¤§
     }
 }
 
-int query(int l, int r, int k)  //åœ¨lå’Œrçš„ä½ç½®åŒºé—´å†…æ‰¾ç¬¬kå¤§ 
+int query(int l, int r, int k)  //ÔÚlºÍrµÄÎ»ÖÃÇø¼äÄÚÕÒµÚk´ó 
 {
     bTop = 0;
     dfs(root, l, r, 1, n);
@@ -88,13 +88,13 @@ int main()
     {
         char ch;
         cin >> ch;
-        if (ch == 'Q')  //è¯¢é—®ç¬¬kå¤§  
+        if (ch == 'Q')  //Ñ¯ÎÊµÚk´ó  
         {
             int l, r, k;
             scanf("%d%d%d", &l, &r, &k);
             printf("%d\n", query(l, r, k));
         }
-        else //ä¿®æ”¹æ•° 
+        else //ÐÞ¸ÄÊý 
         {
             int pos, num;
             scanf("%d%d", &pos, &num);

@@ -10,35 +10,35 @@ struct Node
     int fa, ch[2], size, num, cnt;
     Node(){fa = ch[0] = ch[1] = size = num = cnt = 0;}
 }node[MAXN];
-int top = 1;  // nodeæœ«å°¾ 
-int root;  // æ ‘æ ¹ 
+int top = 1;  // nodeÄ©Î² 
+int root;  // Ê÷¸ù 
 
-int newNode(int num)  // è¿”å›å€¼ä¸ºnumçš„æ–°èŠ‚ç‚¹ 
+int newNode(int num)  // ·µ»ØÖµÎªnumµÄĞÂ½Úµã 
 {
     node[top].num = num;
     node[top].cnt = node[top].size = 1;
     return top++;
 }
 
-bool getlr(int x)  // è¿”å›xæ˜¯çˆ¶äº²çš„å“ªä¸ªå„¿å­ 
+bool getlr(int x)  // ·µ»ØxÊÇ¸¸Ç×µÄÄÄ¸ö¶ù×Ó 
 {
     return node[node[x].fa].ch[1] == x;
 }
 
-void connect(int f, bool lr, int c)  // æŠŠfçš„lrå„¿å­è®¾ä¸ºc 
+void connect(int f, bool lr, int c)  // °ÑfµÄlr¶ù×ÓÉèÎªc 
 {
     if (f) node[f].ch[lr] = c;
     if (c) node[c].fa = f;
 }
 
-void update(int x)  // æ›´æ–°xèŠ‚ç‚¹è®°å½•çš„ä¿¡æ¯ 
+void update(int x)  // ¸üĞÂx½Úµã¼ÇÂ¼µÄĞÅÏ¢ 
 {
     node[x].size = node[x].cnt + node[node[x].ch[0]].size + node[node[x].ch[1]].size;
 }
 
-void rotate(int x)  // æ—‹è½¬x 
+void rotate(int x)  // Ğı×ªx 
 {
-    bool lr = !getlr(x);  // 0å·¦æ—‹1å³æ—‹
+    bool lr = !getlr(x);  // 0×óĞı1ÓÒĞı
     int y = node[x].fa, z = node[y].fa;
     connect(z, getlr(y), x);
     connect(y, !lr, node[x].ch[lr]);
@@ -46,7 +46,7 @@ void rotate(int x)  // æ—‹è½¬x
     update(y);
 }
 
-void splay(int x, int tofa)  // æŠŠxæ—‹è½¬åˆ°tofaçš„å„¿å­ä½ç½® 
+void splay(int x, int tofa)  // °ÑxĞı×ªµ½tofaµÄ¶ù×ÓÎ»ÖÃ 
 {
     for (; node[x].fa != tofa; rotate(x))
         if (node[node[x].fa].fa != tofa)
@@ -55,7 +55,7 @@ void splay(int x, int tofa)  // æŠŠxæ—‹è½¬åˆ°tofaçš„å„¿å­ä½ç½®
     update(x);
 }
 
-void insert(int num)  // æ’å…¥æ•°num 
+void insert(int num)  // ²åÈëÊınum 
 {
     int x = root, y = 0;
     while (x && node[x].num != num)
@@ -65,7 +65,7 @@ void insert(int num)  // æ’å…¥æ•°num
     splay(x, 0);
 }
 
-void find(int num)  // æŸ¥æ‰¾æ•°numæ‰€åœ¨èŠ‚ç‚¹å¹¶æåˆ°æ ¹ 
+void find(int num)  // ²éÕÒÊınumËùÔÚ½Úµã²¢Ìáµ½¸ù 
 {
     int x = root;
     while (node[x].num != num && node[x].ch[node[x].num<num])
@@ -73,7 +73,7 @@ void find(int num)  // æŸ¥æ‰¾æ•°numæ‰€åœ¨èŠ‚ç‚¹å¹¶æåˆ°æ ¹
     splay(x, 0);
 }
 
-int kth(int k)  // æŸ¥è¯¢ç¬¬kå¤§çš„æ•° 
+int kth(int k)  // ²éÑ¯µÚk´óµÄÊı 
 {
     ++k;
     int x = root;
@@ -91,13 +91,13 @@ int kth(int k)  // æŸ¥è¯¢ç¬¬kå¤§çš„æ•°
     return -1;
 } 
 
-int rk(int num)  // æŸ¥è¯¢æ•°numçš„æ’å 
+int rk(int num)  // ²éÑ¯ÊınumµÄÅÅÃû 
 {
     find(num);
     return node[node[root].ch[0]].size;
 }
 
-int nop(int num, bool np)  // np=0æ‰¾å‰é©±ï¼Œ1æ‰¾åç»§ï¼Œè¿”å›ç›®æ ‡èŠ‚ç‚¹ç¼–å· 
+int nop(int num, bool np)  // np=0ÕÒÇ°Çı£¬1ÕÒºó¼Ì£¬·µ»ØÄ¿±ê½Úµã±àºÅ 
 {
     find(num);
     if (node[root].num != num && (node[root].num > num) == np)
@@ -108,13 +108,13 @@ int nop(int num, bool np)  // np=0æ‰¾å‰é©±ï¼Œ1æ‰¾åç»§ï¼Œè¿”å›ç›®æ ‡èŠ‚ç‚¹ç¼–
     return x;
 }
 
-int nextOrPre(int num, bool np)  // np=0æ‰¾å‰é©±ï¼Œ1æ‰¾åç»§ï¼Œè¿”å›ç›®æ ‡èŠ‚ç‚¹æ•°å­— 
+int nextOrPre(int num, bool np)  // np=0ÕÒÇ°Çı£¬1ÕÒºó¼Ì£¬·µ»ØÄ¿±ê½ÚµãÊı×Ö 
 {
     splay(nop(num, np), 0);
     return node[root].num;
 }
 
-void del(int num)  // åˆ é™¤numï¼ˆè‹¥æœ‰å¤šä¸ªåªåˆ ä¸€ä¸ªï¼‰ 
+void del(int num)  // É¾³ınum£¨ÈôÓĞ¶à¸öÖ»É¾Ò»¸ö£© 
 {
     int pre = nop(num, 0), next = nop(num, 1);
     splay(pre, 0), splay(next, pre);

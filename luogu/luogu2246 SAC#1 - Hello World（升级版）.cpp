@@ -48,7 +48,7 @@ int main()
         else if (c[i]=='w')f[6]=(f[6]+f[5])%mo;
         else if (c[i]=='r')f[8]=(f[8]+f[7])%mo;
         else if (c[i]=='d')f[10]=(f[10]+f[9])%mo;
-        //cout <<i<<" ã€€";for (int i=1;i<=10;i++)cout <<f[i]<<' ';cout <<endl; 
+        //cout <<i<<" ¡¡";for (int i=1;i<=10;i++)cout <<f[i]<<' ';cout <<endl; 
     }
     cout <<f[10];
      return 0;
