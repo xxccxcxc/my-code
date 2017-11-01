@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cmath>
 using namespace std;
-const int N = 500050, M = 500050;
+const int N = 100050, M = 100050, D = 20;
 
 struct Edge {
     int to, next;
@@ -63,8 +63,8 @@ int lca(int u, int v) {
 
 int main() {
     memset(head, -1, sizeof(head));
-    int n, m, root;
-    scanf("%d%d%d", &n, &m, &root);
+    int n, m, root = 1;
+    scanf("%d%d", &n, &m);
     for (int i = 1, u, v; i < n; i++) {
         scanf("%d%d", &u, &v);
         add(u, v);
@@ -72,9 +72,12 @@ int main() {
     dfs1(root, 0);
     tr[root].top = root;
     dfs2(root);
-    for (int u, v; m--; ) {
-    	scanf("%d%d", &u, &v);
-    	printf("%d\n", lca(u, v));
+    for (int a, b, c, d; m--; ) {
+    	scanf("%d%d%d%d", &a, &b, &c, &d);
+    	int lca1 = lca(a, b), lca2 = lca(c, d);
+    	if (tr[lca1].dep > tr[lca2].dep)
+    		swap(a, c), swap(b, d), swap(lca1, lca2);
+    	printf(lca(lca2, a) == lca2 || lca(lca2, b) == lca2 ? "Y\n" : "N\n");
     }
     return 0;
 }

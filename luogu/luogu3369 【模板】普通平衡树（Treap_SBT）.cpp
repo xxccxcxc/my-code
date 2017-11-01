@@ -1,146 +1,127 @@
+#include <algorithm>
 #include <iostream>
 #include <cstdlib>
-#include <cstdio>
-#include <algorithm>
 #include <cstring>
+#include <cstdio>
 using namespace std;
-const int INF = 0x3f3f3f3f, MAXN = 100050;
-struct Node
-{
-    int fa, ch[2], size, num, cnt;
-    Node(){fa = ch[0] = ch[1] = size = num = cnt = 0;}
-}node[MAXN];
-int top = 1;  // node末尾 
-int root;  // 树根 
+const int N = 100050, INF = 0x3f3f3f3f;
 
-int newNode(int num)  // 返回值为num的新节点 
-{
-    node[top].num = num;
-    node[top].cnt = node[top].size = 1;
-    return top++;
+struct Node {
+	int fa, ch[2], num, size, cnt;
+}tr[N];
+
+int top = 1, root; 
+
+int newNode(int num) {
+	tr[top].num = num;
+	tr[top].size = tr[top].cnt = 1;
+	return top++;
 }
 
-bool getlr(int x)  // 返回x是父亲的哪个儿子 
-{
-    return node[node[x].fa].ch[1] == x;
+bool getlr(int x) {
+	return tr[tr[x].fa].ch[1] == x;
 }
 
-void connect(int f, bool lr, int c)  // 把f的lr儿子设为c 
-{
-    if (f) node[f].ch[lr] = c;
-    if (c) node[c].fa = f;
+void update(int x) {
+	tr[x].size = tr[tr[x].ch[0]].size + tr[tr[x].ch[1]].size + tr[x].cnt;
 }
 
-void update(int x)  // 更新x节点记录的信息 
-{
-    node[x].size = node[x].cnt + node[node[x].ch[0]].size + node[node[x].ch[1]].size;
+void connect(int f, bool lr, int c) {
+	if (f) tr[f].ch[lr] = c;
+	if (c) tr[c].fa = f;
 }
 
-void rotate(int x)  // 旋转x 
-{
-    bool lr = !getlr(x);  // 0左旋1右旋
-    int y = node[x].fa, z = node[y].fa;
-    connect(z, getlr(y), x);
-    connect(y, !lr, node[x].ch[lr]);
-    connect(x, lr, y);
-    update(y);
+void rotate(int x) {
+	bool lr = getlr(x);  // 0左旋1右旋 
+	int y = tr[x].fa, z = tr[y].fa;
+	connect(z, getlr(y), x);  // 这里是getlr(y)不是lr 
+	connect(y, lr, tr[x].ch[!lr]);
+	connect(x, !lr, y);
+	update(y);
 }
 
-void splay(int x, int tofa)  // 把x旋转到tofa的儿子位置 
-{
-    for (; node[x].fa != tofa; rotate(x))
-        if (node[node[x].fa].fa != tofa)
-            rotate(getlr(x) ^ getlr(node[x].fa) ? x : node[x].fa);
-    if (!tofa) root = x; 
-    update(x);
+void splay(int x, int tofa=0) {
+	for (; tr[x].fa != tofa; rotate(x))
+		if (tr[tr[x].fa].fa != tofa)
+			rotate(getlr(x) ^ getlr(tr[x].fa) ? x : tr[x].fa);
+	update(x);
+	if (!tofa) root = x;
 }
 
-void insert(int num)  // 插入数num 
-{
-    int x = root, y = 0;
-    while (x && node[x].num != num)
-        y = x, x = node[x].ch[num>node[x].num];
-    if (x) ++node[x].cnt;
-    else connect(y, num>node[y].num, (x = newNode(num)));
-    splay(x, 0);
+void insert(int num) {
+	int x = root, y = 0;
+	while (x && tr[x].num != num)
+		y = x, x = tr[x].ch[num > tr[x].num];
+	if (x) ++tr[x].cnt;
+	else connect(y, num > tr[y].num, x = newNode(num));
+	splay(x);
 }
 
-void find(int num)  // 查找数num所在节点并提到根 
-{
-    int x = root;
-    while (node[x].num != num && node[x].ch[node[x].num<num])
-        x = node[x].ch[node[x].num<num];
-    splay(x, 0);
+
+void find(int num) {  // 此题保证num一定存在 
+	int x = root;
+	while (tr[x].num != num && tr[x].ch[num > tr[x].num])
+	// 因为find还可能用在找前驱后继里，所以要加后面的判断 
+		x = tr[x].ch[num > tr[x].num];
+	splay(x);
 }
 
-int kth(int k)  // 查询第k大的数 
-{
-    ++k;
-    int x = root;
-    while (x)
-    {
-        int lsize = node[node[x].ch[0]].size;
-        if (k > lsize && k <= lsize + node[x].cnt)
-        {
-            splay(x, 0);
-            return node[root].num;
-        }
-        if (k <= lsize) x = node[x].ch[0];
-        else k -= lsize + node[x].cnt, x = node[x].ch[1];
-    }
-    return -1;
-} 
-
-int rk(int num)  // 查询数num的排名 
-{
-    find(num);
-    return node[node[root].ch[0]].size;
+int nop(int num, bool np) {  // 0前驱1后继，返回目标结点编号 
+	find(num);
+	if (tr[root].num != num && (tr[root].num > num) == np)
+		return root;
+	int x = tr[root].ch[np];
+	while (tr[x].ch[!np])
+		x = tr[x].ch[!np];
+	return x;
 }
 
-int nop(int num, bool np)  // np=0找前驱，1找后继，返回目标节点编号 
-{
-    find(num);
-    if (node[root].num != num && (node[root].num > num) == np)
-        return root;
-    int x = node[root].ch[np];
-    while (node[x].ch[!np])
-        x = node[x].ch[!np];
-    return x;
+void del(int num) {
+	int pre = nop(num, 0), next = nop(num, 1);
+	splay(pre); splay(next, pre);
+	int x = tr[next].ch[0];
+	if (--tr[x].cnt) splay(x);
+	else connect(next, 0, 0), splay(next, 0);
 }
 
-int nextOrPre(int num, bool np)  // np=0找前驱，1找后继，返回目标节点数字 
-{
-    splay(nop(num, np), 0);
-    return node[root].num;
+int rank(int num) {
+	find(num);
+	return tr[tr[root].ch[0]].size;
 }
 
-void del(int num)  // 删除num（若有多个只删一个） 
-{
-    int pre = nop(num, 0), next = nop(num, 1);
-    splay(pre, 0), splay(next, pre);
-    int x = node[next].ch[0];
-    if (--node[x].cnt) splay(x, 0);
-    else connect(next, 0, 0), splay(next, 0);
-} 
+int kth(int k) {
+	++k;
+	int x = root;
+	while (x) {
+		int lsize = tr[tr[x].ch[0]].size;
+		if (k > lsize && k <= lsize + tr[x].cnt) {
+			splay(x);
+			return tr[x].num;
+		}
+		if (k <= lsize) x = tr[x].ch[0];
+		else k -= lsize + tr[x].cnt, x = tr[x].ch[1];
+	}
+}
 
-int main()
-{
-    int m;
-    scanf("%d", &m);
-    insert(-INF), insert(INF);
-    while (m--)
-    {
-        int opt, x;
-        scanf("%d%d", &opt, &x);
-        switch (opt)
-        {
-            case 1: insert(x); break;
-            case 2: del(x); break;
-            case 3: printf("%d\n", rk(x)); break;
-            case 4: printf("%d\n", kth(x)); break;
-            case 5: printf("%d\n", nextOrPre(x, 0)); break;
-            case 6: printf("%d\n", nextOrPre(x, 1)); break;
-        }
-    }
+int nextOrPre(int num, bool np) {
+	splay(nop(num, np));
+	return tr[root].num;
+}
+
+int main() {
+	int m;
+	scanf("%d", &m);
+	insert(-INF); insert(INF);
+	for (int opt, x; m--; ) {
+		scanf("%d%d", &opt, &x);
+		switch (opt) {
+			case 1: insert(x); break;
+			case 2: del(x); break;
+			case 3: printf("%d\n", rank(x)); break;
+			case 4: printf("%d\n", kth(x)); break;
+			default: printf("%d\n", nextOrPre(x, opt - 5));
+		}
+	}
     return 0;
 }
+

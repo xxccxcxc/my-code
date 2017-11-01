@@ -2,58 +2,57 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include <sstream>
-#include <climits>
 #include <cstdio>
-#include <string>
-#include <vector>
-#include <cmath>
-#include <ctime>
-#include <queue>
-#include <stack>
-#include <deque>
-#include <map>
 using namespace std;
-int n,m,a[500005],d[500005];
-int lowbit(int x){return x&(-x);}
-void add(int x,int y)
-{
-    while (x<=n)
-    {
-        a[x]+=y;
-        x+=lowbit(x);
-    }
+const int N = 500050;
+int n, tr[N]; // 树状数组保存的信息为a[i]-a[i-1]，则求1~i前缀和得到的就是a[i] 
+
+inline int lowbit(int x) {
+	return x & (-x);
 }
-int ask(int x)
-{
-    int ret=0;
-    while (x)
-    {
-        ret+=a[x];
-        x-=lowbit(x);
-    }
-    return ret;
+
+void add1(int pos, int val) { // 把第pos个数加上val（即把a[pos]~a[n]加上val） 
+	while (pos <= n) {
+		tr[pos] += val;
+		pos += lowbit(pos);
+	}
 }
-int main()
-{
-    scanf ("%d%d",&n,&m);
-    for (int i=1;i<=n;i++){scanf ("%d",&d[i]);add(i,d[i]-d[i-1]);} 
-    for (int i=1;i<=m;i++)
-    {
-        int p;
-        scanf ("%d",&p);
-        if (p==1)
-        {
-            int x,y,w;
-            scanf ("%d%d%d",&x,&y,&w);
-            add(x,w);add(y+1,-w);
-        }
-        else
-        {
-            int x;
-            scanf("%d",&x);
-            printf("%d\n",ask(x));
-        }
-    }
+
+void add(int l, int r, int val) { // 把a[l]~a[r]加上val 
+	add1(l, val);
+	add1(r+1, -val);
+}
+
+int query(int pos) { // 返回前pos个数的和（即a[pos]） 
+	int ret = 0;
+	while (pos) {
+		ret += tr[pos];
+		pos -= lowbit(pos);
+	}
+	return ret;
+}
+
+int main() {
+	int m;
+	scanf("%d%d", &n, &m);
+	for (int i = 1, pre = 0, r; i <= n; i++) {
+		scanf("%d", &r);
+		add1(i, r - pre);
+		pre = r;
+	}
+	for (int opt; m--; ) {
+		scanf("%d", &opt); 
+		if (opt == 1) {
+			int l, r, val;
+			scanf("%d%d%d", &l, &r, &val);
+			add(l, r, val);
+		}
+		else {
+			int pos;
+			scanf("%d", &pos);
+			printf("%d\n", query(pos));
+		} 
+	}
     return 0;
 }
+

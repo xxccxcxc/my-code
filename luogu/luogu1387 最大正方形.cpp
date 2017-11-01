@@ -1,28 +1,23 @@
-#include <algorithm>
 #include <iostream>
-#include <cstdlib>
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
 using namespace std;
-int n,m;
-bool a[101][101];
-bool pd(int x,int xx,int y,int yy)
-{
-    for (int i=x;i<=xx;i++)
-      for (int j=y;j<=yy;j++)
-        if (a[i][j]==0)
-          return 0;
-    return 1;
+const int N = 1050;
+int n, m, a[N][N], f[N][N], ans;
+int main() {
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			scanf("%d", &a[i][j]);
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
+			if (a[i][j]) {
+				f[i][j] = min(f[i-1][j-1], min(f[i-1][j], f[i][j-1])) + 1;
+				ans = max(ans, f[i][j]);
+			}
+	printf("%d\n", ans);
+	return 0;
 }
-int main()
-{
-    cin >>n>>m;
-    for (int i=1;i<=n;i++)
-      for (int j=1;j<=m;j++)
-        cin >>a[i][j];
-    for (int k=min(n,m);k>=1;k--)
-      for (int i=1;i<=n-k+1;i++)
-        for (int j=1;j<=m-k+1;j++)
-          if (pd(i,i+k-1,j,j+k-1))
-            {cout <<k;return 0;}
-    return 0;
-}
+

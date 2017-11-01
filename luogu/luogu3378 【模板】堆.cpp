@@ -1,106 +1,51 @@
 #include <algorithm>
 #include <iostream>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <cstdio>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <ctime>
-#include <map>
-#include <set>
 using namespace std;
+const int N = 1000050;
 
-template<class T> class MinHeap
-{
-private:
-    T *heap;
-    int cap;
-    int size;
-public:
-    MinHeap(int capacity = 100000);
-    ~MinHeap(){delete[] heap;}
-    bool push(T data);
-    bool pop();
-    T getTop();
-    int getSize();
-    bool empty();
-}; 
+int heap[N], siz = 0;
 
-template<class T> MinHeap<T>::MinHeap(int _cap)
-{
-    cap = _cap;
-    size = 0;
-    heap = new T[cap];
+void push(int val) {
+	heap[++siz] = val;
+	int u = siz;
+	while (u > 1) {
+		int fa = u >> 1;
+		if (heap[fa] <= val) break;
+		swap(heap[u], heap[fa]);
+		u = fa;
+	}
 }
 
-template<class T> bool MinHeap<T>::push(T val)
-{
-    if (size == cap)
-        return false;
-    int cur = size++;
-    while (cur > 0)
-    {
-        int parent = (cur - 1) / 2;
-        if (val >= heap[parent])
-            break;
-        heap[cur] = heap[parent];
-        cur = parent;
-    }
-    heap[cur] = val;
-    return true;
+int top() {
+	return heap[1];
 }
 
-template<class T> bool MinHeap<T>::pop()
-{
-    if (!size)
-        return false;
-    T val = heap[--size];
-    int cur = 0, son;
-    while ((son = cur * 2 + 1) < size)
-    {
-        if (son + 1 < size && heap[son+1] < heap[son])
-            ++son;
-        if (val <= heap[son])
-            break;
-        heap[cur] = heap[son];
-        cur = son;
-    }
-    heap[cur] = val;
-    return true;
+void pop() {
+	heap[1] = heap[siz--];
+	int u = 1, son;
+	while ((son = u << 1) <= siz) {
+		if (son < siz && heap[son+1] < heap[son]) ++son;
+		if (heap[u] < heap[son]) break;
+		swap(heap[u], heap[son]);
+		u = son;
+	}
 }
 
-template<class T> T MinHeap<T>::getTop()
-{
-    if (size)
-        return heap[0];
-}
-
-template<class T> int MinHeap<T>::getSize()
-{
-    return size;
-}
-
-template<class T> bool MinHeap<T>::empty()
-{
-    return !size;
-}
-
-int main()
-{
-    MinHeap<int> heap(1000000);
-    int n, p, x;
-    scanf("%d", &n);
-    while (n--)
-    {
-        scanf("%d", &p);
-        if (p == 1)
-            heap.push((scanf("%d", &x), x));
-        else if (p == 2)
-            printf("%d\n", heap.getTop());
-        else
-            heap.pop();
-    }
+int main() {
+	int m;
+	scanf("%d", &m);
+	for (int opt, val; m--; ) {
+		scanf("%d", &opt);
+		if (opt == 1) {
+			scanf("%d", &val);
+			push(val);
+		}
+		else if (opt == 2) printf("%d\n", top());
+		else pop();
+	}
     return 0;
 }
 

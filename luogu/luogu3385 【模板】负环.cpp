@@ -4,65 +4,63 @@
 #include <cstdio>
 #include <cstring>
 using namespace std;
-const int N = 200050, M = 200050;
-struct Edge
-{
-    int to, w, next;
-}edge[M*2];
-int e, head[N];
-int T, n, m;
-bool vis[N], flag;
+const int N = 200050, M = 200050;;
+struct Edge {
+	int to, w, next;
+}e[M*2];  // 双向边要开两倍 
+
+int head[N], ecnt;
+bool ok, vis[N];
 int dis[N];
-void clear()
-{
-    e = 0;
-    memset(head, -1, sizeof(head));
-    memset(vis, 0, sizeof(vis));
-    memset(dis, 0, sizeof(dis));
-    flag = false;
+
+void add(int u, int v, int w) {
+	e[ecnt].to = v;
+	e[ecnt].w = w;
+	e[ecnt].next = head[u];
+	head[u] = ecnt++;
 }
-void add1(int u, int v, int w)
-{
-    edge[e].to = v;
-    edge[e].w = w;
-    edge[e].next = head[u];
-    head[u] = e++;
+
+int read() {
+	int tmp;
+	scanf("%d", &tmp);
+	return tmp;
 }
-void dfs(int u)
-{
-    if (flag) return;
-    vis[u] = true;
-    for (int i = head[u]; ~i && !flag; i = edge[i].next)
-    {
-        int v = edge[i].to;
-        if (dis[u] + edge[i].w < dis[v])
-        {
-            dis[v] = dis[u] + edge[i].w;
-            if (vis[v]) flag = true;
-            else dfs(v);
-        }
-    }
-    vis[u] = false;
+
+void clear() {
+	ecnt = 0;
+	memset(head, -1, sizeof(head));
+	ok = true;
+	memset(vis, 0, sizeof(vis));
+	memset(dis, 0x3f, sizeof(dis));
 }
-int main()
-{
-    scanf("%d", &T);
-    while (T--)
-    {
-        clear();
-        scanf("%d%d", &n, &m);
-        int u, v, w;
-        while (m--)
-        {
-            scanf("%d%d%d", &u, &v, &w);
-            add1(u, v, w);
-            if (w >= 0) add1(v, u, w);
-        }
-        for (int i = 1; i <= n && !flag; i++)
-            if (!vis[i]) dfs(i);
-        if (flag) cout << "YE5" << endl;
-        else cout << "N0" << endl;
-    }
-    return 0;
+
+void dfs(int u) {
+	if (!ok) return;
+	vis[u] = true;
+	for (int i = head[u]; ~i && ok; i = e[i].next) {
+		int v = e[i].to;
+		if (dis[u] + e[i].w < dis[v]) {
+			dis[v] = dis[u] + e[i].w;
+			if (vis[v]) ok = false;
+			else dfs(v);
+		}
+	}
+	vis[u] = false;
+}
+
+int main() {
+	for (int T = read(), n, m; T--; ) {
+		clear();
+		scanf("%d%d", &n, &m);
+		for (int u, v, w; m--; ) {
+			scanf("%d%d%d", &u, &v, &w);
+			add(u, v, w);
+			if (w >= 0) add(v, u, w);
+		}
+		for (int i = 1; i <= n && ok; i++)
+			if (!vis[i]) dfs(i);
+		printf(ok ? "N0\n" : "YE5\n");
+	}
+	return 0;
 }
 

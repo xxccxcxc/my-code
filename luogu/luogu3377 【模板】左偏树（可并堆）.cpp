@@ -1,81 +1,76 @@
-#include <iostream>
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
+#include <iostream>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 using namespace std;
-const int MAXN = 100050;
-struct Item
-{
-    int val, id;
-    bool operator <(const Item &b)const{ return val < b.val || val == b.val && id < b.id; }\
-    Item(){}
-    Item(int _val, int _id):val(_val), id(_id){}
+const int N = 100050;
+
+struct Item {
+	int val, id;
+	Item(): val(0), id(0) {}
+	Item(int _val, int _id): val(_val), id(_id) {}
+	bool operator<(const Item &t) {
+		return val < t.val || val == t.val && id < t.id;
+	}
 };
-struct Node
-{
-    Item data;
-    int ls, rs, dis;
-    Node(){ls = rs = dis = 0; data = Item(0, 0);}
-    Node(int val, int id):ls(0), rs(0), dis(0){ data = Item(val, id); }
-}node[MAXN];
-int fa[MAXN];
-bool die[MAXN];
-int merge(int x, int y)
-{
-    if (!x) return y;
-    if (!y) return x;
-    if (node[y].data < node[x].data) swap(x, y);
-    node[x].rs = merge(node[x].rs, y);
-    if (node[node[x].ls].dis < node[node[x].rs].dis)
-        swap(node[x].ls, node[x].rs);
-    node[x].dis = node[node[x].rs].dis + 1;
-    return x;
+
+struct Node {
+	int l, r, dis;
+	Item data;
+	Node(): l(0), r(0), dis(0), data(Item()) {}
+	Node(int _val, int _id): l(0), r(0), dis(1), data(Item(_val, _id)) {}
+}tr[N];
+
+int fa[N];
+bool die[N];
+
+int find(int x) {
+	if (fa[x] != x) fa[x] = find(fa[x]);
+	return fa[x];
 }
-int find(int x)
-{
-    if (fa[x] != x) fa[x] = find(fa[x]);
-    return fa[x];
+
+int merge(int x, int y) {
+	if (!x) return y;
+	if (!y) return x;
+	if (tr[y].data < tr[x].data) swap(x, y);
+	tr[x].r = merge(tr[x].r, y);
+	if (tr[tr[x].l].dis < tr[tr[x].r].dis)
+		swap(tr[x].l, tr[x].r);
+	tr[x].dis = tr[tr[x].r].dis + 1;
+	return x;
 }
-int main()
-{
-    node[0].dis = -1;
-    int n, m;
-    scanf("%d%d", &n, &m);
-    for (int i = 1; i <= n; i++)
-    {
-        int val;
-        scanf("%d", &val);
-        node[i] = Node(val, i);
-        fa[i] = i;
-    }
-    while (m--)
-    {
-        int opt;
-        scanf("%d", &opt);
-        if (opt == 1)
-        {
-            int x, y;
-            scanf("%d%d", &x, &y);
-            if (die[x] || die[y]) continue;
-            int rx = find(x), ry = find(y);
-            if (rx == ry) continue;
-            fa[rx] = fa[ry] = merge(rx, ry);
-        }
-        else
-        {
-            int x;
-            scanf("%d", &x);
-            if (die[x]) puts("-1");
-            else
-            {
-                int root = find(x);
-                die[root] = true;
-                printf("%d\n", node[root].data.val);
-                fa[root] = merge(node[root].ls, node[root].rs);
-                fa[fa[root]] = fa[root];
-            }
-        }
-    }
+
+int main() {
+	int n, m;
+	scanf("%d%d", &n, &m);
+	for (int i = 1, val; i <= n; i++) {
+		scanf("%d", &val);
+		tr[i] = Node(val, i);
+		fa[i] = i;
+	}
+	for (int opt, x, y; m--; ) {
+		scanf("%d", &opt);
+		if (opt == 1) {
+			scanf("%d%d", &x, &y);
+			if (die[x] || die[y]) continue;
+			int fx = find(x), fy = find(y);
+			if (fx == fy) continue;
+			fa[fx] = fa[fy] = merge(fx, fy);
+		}
+		else {
+			scanf("%d", &x);
+			if (die[x]) {
+				printf("-1\n");
+				continue;
+			}
+			int fx = find(x);
+			printf("%d\n", tr[fx].data.val);
+			die[fx] = true;
+			fa[fx] = merge(tr[fx].l, tr[fx].r);  // 这里不把旧根的fa清零，而是指向新根 
+			fa[fa[fx]] = fa[fx];  // fa[fx]作为新树根，它的fa必须指向自己 
+		}
+	}
     return 0;
 }
 

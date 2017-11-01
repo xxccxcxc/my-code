@@ -1,58 +1,41 @@
-#include <algorithm>
 #include <iostream>
-#include <cstring>
+#include <algorithm>
 #include <cstdlib>
 #include <cstdio>
-#include <vector>
-#include <queue>
-#include <cmath>
-#include <ctime>
-#include <map>
-#include <set>
+#include <cstring>
 using namespace std;
 typedef unsigned long long ULL;
-const ULL SEED1 = 131, SEED2 = 163;
-const int MAXN = 10050;
-struct Node
-{
-    int h1, h2;
-    bool operator <(Node v)
-    {
-        return h1 < v.h1 || h1 == v.h1 && h2 < v.h2;
-    }
-    bool operator !=(Node v)
-    {
-        return h1 != v.h1 || h2 != v.h2;
-    }
-};
+const int N = 10050;
 
-ULL hash(string s, ULL seed)
-{
-    ULL ret = 0;
-    for (int i = 0; i < s.size(); i++)
-        ret = ret * seed + s[i];
-    return ret;
-}
+struct Hash {
+    ULL h1, h2;
+    const static ULL SEED1 = 131, SEED2 = 163;
+    static ULL getHash(string s, ULL seed) {
+        ULL ret = 0;
+        for (int i = 0; i < s.size(); i++)
+            ret = ret * seed + s[i];
+        return ret;
+    }
+    Hash(){}
+    Hash(string s): h1(getHash(s, SEED1)), h2(getHash(s, SEED2)) {}
+    bool operator<(const Hash &t) const {
+        return h1 < t.h1 || h1 == t.h1 && h2 < t.h2;
+    }
+}hash[N];
 
-int main()
-{
+int main() {
     int n;
-    Node hashed[MAXN];
-    cin >> n; 
-    for (int i = 0; i < n; ++i)
-    {
-        string r;
-        cin >> r;
-        hashed[i].h1 = hash(r, SEED1);
-        hashed[i].h2 = hash(r, SEED2);
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        string s;
+        cin >> s;
+        hash[i] = Hash(s);
     }
-    sort(hashed, hashed + n);
+    sort(hash + 1, hash + n + 1);
     int ans = 1;
-    for (int i = 1; i < n; ++i)
-        if (hashed[i] != hashed[i-1])
-            ++ans;
+    for (int i = 2; i <= n; i++)
+        ans += hash[i-1] < hash[i];
     cout << ans << endl;
     return 0;
 }
-
 

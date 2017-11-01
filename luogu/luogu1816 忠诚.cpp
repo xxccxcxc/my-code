@@ -1,37 +1,25 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
-#include <algorithm>
-#include <cmath>
-#include <ctime>
 #include <cstring>
-#include <queue>
-#include <vector>
-#include <stack>
-#include <set>
-#include <map>
-#include <bitset>
-#include <deque>
-#include <utility>
+#include <algorithm>
+#include <cmath> 
 using namespace std;
-int a[200005]={0},f[200005][31]={0};
-int main()
-{
-    //freopen (".in","r",stdin);
-    //freopen (".out","w",stdout);
-    int n,m;
-    scanf ("%d%d",&n,&m);
-    for (int i=1;i<=n;i++){scanf ("%d",&a[i]);f[i][0]=a[i];}
-    for (int j=1;j<=log(n)/log(2);j++)
-      for (int i=1;i<=n-(1<<j)+1;i++)
-        f[i][j]=min(f[i][j-1],f[i+(1<<(j-1))][j-1]);
-    for (int i=1;i<=m;i++)
-    {
-        int x,y;
-        scanf ("%d%d",&x,&y);
-        int t=log(y-x+1)/log(2);
-        printf ("%d ",min(f[x][t],f[y-(1<<t)+1][t]));
-    }
-    return 0;
+const int N = 1000050;
+int n, m, f[N][30];
+int main() {
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= n; i++)
+		scanf("%d", &f[i][0]);
+	for (int j = 1; j <= log(n) / log(2); j++)
+		for (int i = 1; i <= n - (1 << j) + 1; i++)
+			f[i][j] = min(f[i][j-1], f[i+(1<<(j-1))][j-1]);
+	for (int l, r; m--; ) {
+		scanf("%d%d", &l, &r);
+		int t = log(r - l + 1) / log(2);
+		printf("%d ", min(f[l][t], f[r-(1<<t)+1][t]));
+	}
+	puts("");
+	return 0;
 }
 

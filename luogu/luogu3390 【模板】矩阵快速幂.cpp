@@ -7,16 +7,13 @@ using namespace std;
 typedef long long LL;
 
 class Matrix {
-    
 private:
-    
     static const LL MOD = 1000000007;
     static const int N = 105;
     LL mat[N][N];
     int n, m;
     
 public:
-    
     Matrix(int _n=0, int _m=0) {
         n = _n; m = _m;
         memset(mat, 0, sizeof(mat));
@@ -69,12 +66,10 @@ ostream& operator<<(ostream &out, const Matrix &a) {
 }
 
 int main() {
-    int n;
-    LL k;
+    int n; LL k;
     cin >> n >> k;
     Matrix a(n, n);
-    cin >> a;
+	cin >> a; 
     cout << (a ^ k);
     return 0;
 }
-

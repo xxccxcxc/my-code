@@ -1,76 +1,66 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
-#include <cstring>
-#include <sstream>
-#include <climits>
 #include <cstdio>
-#include <string>
-#include <vector>
-#include <cmath>
-#include <ctime>
+#include <cstring>
 #include <queue>
-#include <stack>
-#include <deque>
-#include <map>
-#define MAXN 10000
-#define MAXM 500000
 using namespace std;
-struct edge
-{
-    int to,next,w;
-}a[MAXM+5];
-struct node
-{
-    int d,w;
-    node(){d=w=0;}
-    node(int dd,int ww){d=dd;w=ww;}
-    bool operator < (const node &t1)const{return w>t1.w;}
+const int N = 10050, M = 500050, INF = 0x3f3f3f3f;
+struct Edge {
+    int to, w, next;
+    Edge() {}
+    Edge(int _to, int _w, int _next): to(_to), w(_w), next(_next) {}
+}e[M];
+
+struct Node {
+    int u, w;
+    Node() {}
+    Node(int _u, int _w): u(_u), w(_w) {}
+    bool operator<(const Node &t) const { return w > t.w; }  // 把大根堆当小根堆用，所以把小于重载成大于 
 };
-int n,m,st,t;
-int head[MAXN+5],f[MAXN+5];
-bool vis[MAXN+5];
-void add(int x,int y,int z)
-{
-    a[++t].w=z;
-    a[t].to=y;
-    a[t].next=head[x];
-    head[x]=t;
+
+int ecnt, head[N];  // 记得赋初值 
+int dis[N];
+bool vis[N];
+
+void add(int u, int v, int w) {
+    e[ecnt] = Edge(v, w, head[u]);
+    head[u] = ecnt++;
 }
-void dij()
-{
-    memset (f,127,sizeof(f));
-    priority_queue <node> q;
-    f[st]=0;vis[st]=1;q.push(node(st,0));
-    int u=st;
-    for (int i=1;i<n;i++)
-    {
-        for (int j=head[u];j;j=a[j].next)
-        {
-            int v=a[j].to,s=a[j].w;
-            if (!vis[v]&&f[u]+s<f[v])
-            {
-                f[v]=f[u]+s;
-                q.push(node(v,f[v]));
+
+void dij(int n, int s) {  // 堆优化dijkstra 
+    memset(dis, 0x3f, sizeof(dis));
+    priority_queue<Node> q;
+    dis[s] = 0;
+    q.push(Node(s, 0));
+    for (int _ = 1; _ <= n; _++) {
+        while (!q.empty() && vis[q.top().u]) q.pop();
+        if (q.empty()) break; 
+        int u = q.top().u; q.pop();
+        vis[u] = true;  // 出队vis要置1 
+        for (int i = head[u]; ~i; i = e[i].next) {
+            int v = e[i].to;
+            if (!vis[v] && dis[u] + e[i].w < dis[v]) {  // 这里要!vis[v]，新入队的只能是未访问过的点 
+                dis[v] = dis[u] + e[i].w;
+                q.push(Node(v, dis[v]));
             }
         }
-        while (!q.empty()&&vis[q.top().d])q.pop();
-        if (q.empty())return;
-        u=q.top().d;vis[u]=1;q.pop();
     }
 }
-int main()
-{
-    scanf ("%d%d%d",&n,&m,&st);
-    for (int i=1;i<=m;i++)
-    {
-        int r1,r2,r3;
-        scanf ("%d%d%d",&r1,&r2,&r3);
-        add(r1,r2,r3);
+
+int main() {
+    memset(head, -1, sizeof(head));
+    int n, m, s;
+    scanf("%d%d%d", &n, &m, &s);
+    for (int u, v, w; m--; ) {
+        scanf("%d%d%d", &u, &v, &w);
+        add(u, v, w);
     }
-    dij();
-    for (int i=1;i<=n;i++)
-      if (f[i]>200000000)printf ("2147483647 ");
-      else printf ("%d ",f[i]);
+    dij(n, s);
+    for (int i = 1; i <= n; i++) {
+        if (dis[i] == INF) dis[i] = 2147483647;
+        printf("%d ", dis[i]);
+    }
     return 0;
 }
+

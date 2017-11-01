@@ -1,32 +1,37 @@
-#include <algorithm>
 #include <iostream>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cstdio>
-#include <string>
-#include <cmath>
-#define mo 10007
+#include <algorithm>
 using namespace std;
-int n;
-long long x[200005],y[200005],w[200005],s[200005],m1[200005],m2[200005],s1,s2;
-void ycl(int u,int v)
-{
-    if (w[v]>m1[u]){m2[u]=m1[u];m1[u]=w[v];}
-    else if (w[v]>m2[u])m2[u]=w[v];
+const int N = 200050, MOD = 10007;
+int n, u[N], v[N], w[N], s[N], mx1[N], mx2[N];
+
+void work(int u, int v) {
+	s[u] = (s[u] + w[v]) % MOD;
+	if (w[v] > mx2[u])  {
+		mx2[u] = w[v];
+		if (mx2[u] > mx1[u])
+			swap(mx1[u], mx2[u]);
+	}
 }
-int main()
-{
-    cin >>n;
-    for (int i=1;i<n;i++)cin >>x[i]>>y[i];
-    for (int i=1;i<=n;i++)cin >>w[i];
-    for (int i=1;i<n;i++)
-    {
-        s[x[i]]+=w[y[i]];s[y[i]]+=w[x[i]];
-        ycl(x[i],y[i]);ycl(y[i],x[i]);
-    }
-    for (int i=1;i<=n;i++)s1=max(s1,m1[i]*m2[i]);
-    for (int i=1;i<n;i++)
-      s2=(s2+(w[x[i]]*(s[y[i]]-w[x[i]]))%mo+(w[y[i]]*(s[x[i]]-w[y[i]]))%mo)%mo;
-    cout <<s1<<' '<<s2;
-    return 0;
+
+int main() {
+	cin >> n;
+	for (int i = 1; i < n; i++)
+		cin >> u[i] >> v[i];
+	for (int i = 1; i <= n; i++)
+		cin >> w[i];
+	for (int i = 1; i < n; i++)
+		work(u[i], v[i]), work(v[i], u[i]);
+	int mx = 0, sum = 0;
+	for (int i = 1; i <= n; i++) {
+		mx = max(mx, mx1[i] * mx2[i]);
+		w[i] %= MOD;
+	}
+	for (int i = 1; i < n; i++)
+		sum = (sum + w[u[i]] * (s[v[i]] - w[u[i]]) + w[v[i]] * (s[u[i]] - w[v[i]])) % MOD;
+	cout << mx << ' ' << sum << endl;
+	return 0;
 }
+

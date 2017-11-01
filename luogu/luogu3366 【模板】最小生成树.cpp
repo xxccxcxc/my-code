@@ -1,58 +1,68 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
-#include <cstring>
-#include <sstream>
-#include <utility>
 #include <cstdio>
-#include <string>
-#include <vector>
-#include <bitset>
-#include <cmath>
-#include <ctime>
+#include <cstring>
 #include <queue>
-#include <stack>
-#include <deque>
-#include <map>
-#include <set>
 using namespace std;
-int n,m,f[5005],ans=0,a[5005][5005];
-bool p[5005];
-int main()
-{
-    memset (f,127,sizeof(f));
-    memset (a,127,sizeof(a));
-    memset (p,1,sizeof(p));
-    cin >>n>>m;
-    for (int i=1;i<=m;i++)
-    {
-        int x,y,w;
-        cin >>x>>y>>w;
-        if (w<a[x][y])a[x][y]=a[y][x]=w;
+const int N = 5050, M = 200050, INF = 0x3f3f3f3f;
+struct Node {
+    int u, w;
+    Node(int _u = 0, int _w = 0): u(_u), w(_w) {}
+    bool operator<(const Node &t) const { return w > t.w; }
+};
+
+struct Edge {
+    int to, w, next;
+    Edge(int _to = 0, int _w = 0, int _next = 0): to(_to), w(_w), next(_next) {}
+}e[M<<1];
+
+int ecnt, head[N];
+bool ma[N][N], vis[N];
+int dis[N];
+
+void add1(int u, int v, int w) {
+    e[ecnt] = Edge(v, w, head[u]);
+    head[u] = ecnt++;
+}
+
+void add(int u, int v, int w) {
+    add1(u, v, w);
+    add1(v, u, w);
+}
+
+int main() {  // ¶ÑÓÅ»¯Prim 
+    memset(head, -1, sizeof(head));
+    int n, m;
+    scanf("%d%d", &n, &m);
+    for (int i = 1, u, v, w; i <= m; i++) {
+        scanf("%d%d%d", &u, &v, &w);
+        add(u, v, w);
     }
-    f[1]=0;f[0]=0x7fffffff;
-    for (int i=1;i<=n;i++)
-    {
-        int t=0;
-        for (int j=1;j<=n;j++)
-          if (p[j]&&f[j]<f[t])t=j;
-        p[t]=0;
-        for (int j=1;j<=n;j++)
-          if (p[j]&&a[t][j]<f[j])
-            f[j]=a[t][j];
-        //cout <<endl<<i<<' '<<t<<' '<<ans<<endl;
-        //for (int j=1;j<=n;j++)cout <<f[j]<<' ';
-        //cout <<endl;
+    memset(dis, 0x3f, sizeof(dis));
+    dis[1] = 0;
+    priority_queue<Node> q;
+    q.push(Node(1, 0));
+    bool die = false;
+    int ans = 0;
+    for (int _ = 1; _ <= n; _++) {
+        while (!q.empty() && vis[q.top().u]) q.pop();
+        if (q.empty()) {
+            die = true;
+            break;
+        }
+        int u = q.top().u; ans += q.top().w; q.pop();
+        vis[u] = true; 
+        for (int i = head[u]; ~i; i = e[i].next) {
+            int v = e[i].to;
+            if (!vis[v] && e[i].w < dis[v]) {
+            	dis[v] = e[i].w;
+            	q.push(Node(v, dis[v]));
+			}
+        }
     }
-    ans=0;
-    for (int i=1;i<=n;i++)ans+=f[i];
-    cout <<ans;
+    if (die) printf("orz\n");
+    else printf("%d\n", ans);
     return 0;
 }
-/*
-5 4
-1 2 1
-1 3 2
-1 4 6
-1 5 9
-*/
+
