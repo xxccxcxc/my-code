@@ -1,74 +1,65 @@
+#include <algorithm>
 #include <iostream>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
+#include <cstdio>
 #include <vector>
 #include <stack>
 using namespace std;
-const int N = 500050;
-int n, m;
-int a[N], from[N], to[N];
+const int N = 10050, INF = 0x3f3f3f3f;
 vector<int> e[N], e2[N];
-int dfscnt, dfn[N], low[N];
-bool vis[N];
+int a[N], dfscnt, dfn[N], low[N], bcnt, belong[N], val[N], f[N];
 stack<int> st;
-int bcnt, belong[N], val[N];
-int f[N];
 
-void tarjan(int u){
-    dfn[u] = low[u] = ++dfscnt;
-    vis[u] = true;
-    st.push(u);
-    for (int i = 0, ecnt = e[u].size(); i < ecnt; ++i){
-        int v = e[u][i];
-        if (!dfn[v]){
-            tarjan(v);
-            low[u] = min(low[u], low[v]);
-        }
-        else if (vis[v]) low[u] = min(low[u], dfn[v]);
-    }
-    if (low[u] == dfn[u]){
-        ++bcnt;
-        vis[u] = false;
-        while (true){
-            int tmp = st.top(); st.pop();
-            belong[tmp] = bcnt;
-            val[bcnt] += a[tmp];
-            vis[tmp] = false;
-            if (tmp == u) break;
-        }
-    }
+void tarjan(int u) {  // 缩点（强连通分量） 
+	low[u] = dfn[u] = ++dfscnt;
+	st.push(u);
+	for (int siz = e[u].size(), i = 0; i < siz; i++) {
+		int v = e[u][i];
+		if (!dfn[v]) {
+			tarjan(v);
+			low[u] = min(low[u], low[v]);
+		}
+		else if (!belong[v]) low[u] = min(low[u], dfn[v]);  // 指向已经出栈的点的边对答案无影响 
+	}
+	if (low[u] == dfn[u]) {  // 讲不清楚，背下来就好 
+		++bcnt;
+		while (!st.empty()) {
+			int tmp = st.top(); st.pop();
+			belong[tmp] = bcnt;
+			val[bcnt] += a[tmp];
+			if (tmp == u) break;
+		}
+	}
 }
 
-void dfs(int u){
-    f[u] = val[u];
-    for (int i = 0, ecnt = e2[u].size(); i < ecnt; ++i){
-        int v = e2[u][i];
-        if (!f[v]) dfs(v);
-        f[u] = max(f[u], f[v] + val[u]);
-    }
+int dfs(int u) {
+	if (f[u] < INF) return f[u];
+	f[u] = 0;
+	for (int siz = e2[u].size(), i = 0; i < siz; i++) {
+		int v = e2[u][i];
+		f[u] = max(f[u], dfs(v));
+	}
+	return f[u] += val[u];
 }
 
-int main(){
-    cin >> n >> m;
-    for (int i = 1; i <= n; ++i)
-        cin >> a[i];
-    for (int i = 1; i <= m; ++i){
-        cin >> from[i] >> to[i];
-        e[from[i]].push_back(to[i]);
-    }
-    for (int i = 1; i <= n; ++i)
-        if (!dfn[i]) tarjan(i);
-    for (int i = 1; i <= m; ++i)
-        if (belong[from[i]] != belong[to[i]])
-            e2[belong[from[i]]].push_back(belong[to[i]]);
-    int ans = 0;
-    for (int i = 1; i <= bcnt; ++i)
-        if (!f[i]){
-            dfs(i);
-            ans = max(ans, f[i]);
-        }
-    cout << ans << endl;
+int main() {
+	int n, m;
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= n; i++)
+		scanf("%d", &a[i]);
+	for (int u, v; m--; e[u].push_back(v))
+		scanf("%d%d", &u, &v);
+	for (int i = 1; i <= n; i++)
+		if (!dfn[i]) tarjan(i);
+	for (int i = 1; i <= n; i++)
+		for (int u = belong[i], siz = e[i].size(), j = 0; j < siz; j++)
+			e2[u].push_back(belong[e[i][j]]);  // 缩点完重新建边 
+	memset(f, 0x3f, sizeof(f));
+	int ans = 0;
+	for (int i = 1; i <= bcnt; i++)
+		ans = max(ans, dfs(i));
+	printf("%d\n", ans);
     return 0;
 }
 

@@ -1,58 +1,47 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
-#include <cstring>
-#include <sstream>
-#include <climits>
 #include <cstdio>
-#include <string>
+#include <cstring>
 #include <vector>
-#include <cmath>
-#include <ctime>
-#include <queue>
-#include <stack>
-#include <deque>
-#include <map>
 using namespace std;
-int n,m,e,b[1005];
-bool a[1005][1005],p[1005];
-bool dfs(int u)
-{
-    for (int v=1;v<=m;v++)
-    {
-        if (a[u][v]&&!p[v])
-        {
-            p[v]=1;
-            if (!b[v]||dfs(b[v]))
-            {
-                b[v]=u;
-                return 1;
-            }
-        }
-    }
-    return 0;
-}
-int pp()
-{
-    int ans=0;
-    for (int i=1;i<=n;i++)
-    {
-        memset (p,0,sizeof(p));
-        if (dfs(i))++ans;
-    }
-    return ans;
-}
-int main()
-{
-    scanf ("%d%d%d",&n,&m,&e);
-    for (int i=1;i<=e;i++)
-    {
-        int t1,t2;
-        scanf ("%d%d",&t1,&t2);
-        if (t2<=m)a[t1][t2]=1; 
-    }
-    printf ("%d",pp());
-    return 0;
+const int N = 1050, M = 1050;
+int n, m;
+vector<int> e[N];
+int pre[N];
+bool vis[N];
+
+bool dfs(int u) {
+	for (int siz = e[u].size(), i = 0; i < siz; i++) {
+		int v = e[u][i];
+		if (!vis[v]) {
+			vis[v] = true;
+			if (!pre[v] || dfs(pre[v])) {
+				pre[v] = u;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
+int Hungary() {
+	int ret = 0;
+	for (int i = 1; i <= n; i++) {
+		memset(vis, 0, sizeof(vis));
+		ret += dfs(i);
+	}
+	return ret;
+}
+
+int main() {
+	int ecnt;
+	scanf("%d%d%d", &n, &m, &ecnt);
+	for (int u, v; ecnt--; ) {
+		scanf("%d%d", &u, &v);
+		if (v <= m) e[u].push_back(v);
+	}
+	printf("%d\n", Hungary());
+	return 0;
+}
 

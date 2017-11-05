@@ -6,16 +6,17 @@
 using namespace std;
 typedef long long LL;
 const int N = 100050;
+
 struct Node {
 	int l, r;
-	LL sum, lazy; // lazy表示子树上的点都需要更新，但自己已经更新完毕 
+	LL sum, lazy;  // lazy表示子树上的点都需要更新，但自己已经更新完毕 
 	int size() {
 		return r - l + 1;
 	}
-}tr[N * 4];
+}tr[N << 2];  // 一定要开4倍以上空间 
 
 int son(int u, int p) {
-	return (u << 1) + p;
+	return u << 1 | p;
 }
 
 void pushup(int u) {
@@ -60,7 +61,8 @@ void update(int u, int l, int r, LL val) {
 LL query(int u, int l, int r) {
 	if (tr[u].l == l && tr[u].r == r)
 		return tr[u].sum;
-	if (tr[u].lazy) pushdown(u);
+	if (tr[u].lazy) pushdown(u);  // 记得pushdown 
+	// int mid = (l + r) >> 1; 是错误的 
 	int mid = (tr[u].l + tr[u].r) >> 1;
 	LL ret = 0;
 	if (l <= mid) ret += query(son(u, 0), l, min(r, mid));
@@ -76,7 +78,7 @@ int main() {
 		scanf("%d%d%d", &opt, &l, &r);
 		if (opt == 1) {
 			LL val;
-			scanf("%lld", &val);
+			scanf("%lld", &val);  // 线段树开long long的话，scanf要记得%lld 
 			update(1, l, r, val);
 		}
 		else printf("%lld\n", query(1, l, r));

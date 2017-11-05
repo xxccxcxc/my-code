@@ -1,45 +1,37 @@
 #include <iostream>
-#include <cstdio>
-#include <cstdlib>
 #include <algorithm>
+#include <cstdlib>
+#include <cstdio>
 #include <cstring>
 using namespace std;
-const int N = 1000050, M = 1050;
-
+const int N = 1000050, M = 1000000;
 int nxt[M];
 
-void getnext(const string &p) {
-    memset(nxt, 0, sizeof(nxt));
-    int lp = p.size();
-    for (int i = 1, k = 0; i < lp; i++) {
-        while (k && p[i] != p[k])
-            k = nxt[k-1];
-        if (p[i] == p[k]) ++k;
-        nxt[i] = k;
-    }
+void getNxt(const string &p) {
+	nxt[0] = 0;
+	for (int lp = p.size(), i = 1, j = 0; i < lp; i++) {
+		while (j && p[j] != p[i]) j = nxt[j-1];
+		if (p[j] == p[i]) ++j;
+		nxt[i] = j;
+	}
 }
 
 void kmp(const string &s, const string &p) {
-    getnext(p);
-    int ls = s.size(), lp = p.size();
-    for (int i = 0, j = 0; i < ls; i++) {
-        while (j && s[i] != p[j])
-            j = nxt[j-1];
-        if (s[i] == p[j]) ++j;
-        if (j == lp) {
-            printf("%d\n", i - lp + 2);
-            j = nxt[j-1];
-        }
-    }
-    for (int i = 0; i < lp; i++)
-        printf("%d ", nxt[i]);
-    puts("");
+	getNxt(p);
+	for (int ls = s.size(), lp = p.size(), i = 0, j = 0; i < ls; i++) {
+		while (j && p[j] != s[i]) j = nxt[j-1];
+		if (p[j] == s[i]) ++j;
+		if (j == lp) { cout << i - lp + 2 << endl; j = nxt[j-1]; }
+	}
+	for (int lp = p.size(), i = 0; i < lp; i++)
+		cout << nxt[i] << ' ';
+	cout << endl;
 }
 
 int main() {
-    string s, p;
-    cin >> s >> p;
-    kmp(s, p);
-    return 0;
+	string s, p;
+	cin >> s >> p;
+	kmp(s, p); 
+	return 0;
 }
 

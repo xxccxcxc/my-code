@@ -5,39 +5,33 @@
 #include <cstring>
 using namespace std;
 const int N = 11000050;
-char sr[N], s[N*2];
-int len[N*2];
-int manacher(int n, char *a)
-{
-    int id = 0, mx = 0, ans = 0;
-    for (int i = 1; i < n-1; i++)
-    {
-        len[i] = 1;
-        if (i < mx)
-            len[i] = min(len[id*2-i], mx-i);
-        while (a[i+len[i]] == a[i-len[i]])
-            ++len[i];
-        if (i+len[i] > mx)
-            mx = i+len[i], id = i;
-        ans = max(ans, len[i]);
-    }
-    return ans-1;
+char r[N], t[N<<1];
+int len[N<<1];
+
+char* init(char *a) {
+	t[0] = '^'; t[1] = '#';
+	int la = strlen(a);
+	for (int i = 0; i < la; i++)
+		t[(i<<1)+2] = a[i], t[(i<<1)+3] = '#';
+	t[(la<<1)+2] = '$'; t[(la<<1)+3] = '\0';
+	return t;
 }
-int main()
-{
-    scanf("%s", sr);
-    int n = strlen(sr);
-    s[0] = '$';
-    s[1] = '#';
-    for (int i = 0; i < n; i++)
-    {
-        s[i*2+2] = sr[i];
-        s[i*2+3] = '#';
-    }
-    n = n*2+3;
-    s[n-1] = '@';
-    s[n] = '\0';
-    cout << manacher(n, s) << endl;
-    return 0;
+
+int manacher(char *a) {
+	char *s = init(a);
+	int ret = 0, mx = 0, id;
+	for (int ls = strlen(s), i = 0; i < ls; i++) {
+		len[i] = i < mx ? min(len[(id<<1)-i], mx-i) : 1;
+		while (s[i+len[i]] == s[i-len[i]]) ++len[i];
+		if (i + len[i] > mx) mx = i + len[i], id = i;
+		ret = max(ret, len[i] - 1);
+	}
+	return ret;
+}
+
+int main() {
+	scanf("%s", r);
+	printf("%d\n", manacher(r));
+	return 0;
 }
 

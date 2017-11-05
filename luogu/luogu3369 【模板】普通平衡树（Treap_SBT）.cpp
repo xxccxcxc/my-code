@@ -1,127 +1,43 @@
-#include <algorithm>
-#include <iostream>
-#include <cstdlib>
-#include <cstring>
-#include <cstdio>
+#include<cstdio>
+#include<cmath>
+#include<vector>
+#include<algorithm>
 using namespace std;
-const int N = 100050, INF = 0x3f3f3f3f;
-
-struct Node {
-	int fa, ch[2], num, size, cnt;
-}tr[N];
-
-int top = 1, root; 
-
-int newNode(int num) {
-	tr[top].num = num;
-	tr[top].size = tr[top].cnt = 1;
-	return top++;
+const int MAXN=100000+2017;
+void Read(int & p)
+{
+    p=0;
+    int f=1;
+    char c=getchar();
+    while(c<'0' or c>'9') 
+    {
+        if(c=='-') f=-1;
+        c=getchar();
+    }
+    while(c<='9' and c>='0')
+        p=p*10+c-'0',c=getchar();
+    p*=f;
+    return ;
 }
-
-bool getlr(int x) {
-	return tr[tr[x].fa].ch[1] == x;
-}
-
-void update(int x) {
-	tr[x].size = tr[tr[x].ch[0]].size + tr[tr[x].ch[1]].size + tr[x].cnt;
-}
-
-void connect(int f, bool lr, int c) {
-	if (f) tr[f].ch[lr] = c;
-	if (c) tr[c].fa = f;
-}
-
-void rotate(int x) {
-	bool lr = getlr(x);  // 0左旋1右旋 
-	int y = tr[x].fa, z = tr[y].fa;
-	connect(z, getlr(y), x);  // 这里是getlr(y)不是lr 
-	connect(y, lr, tr[x].ch[!lr]);
-	connect(x, !lr, y);
-	update(y);
-}
-
-void splay(int x, int tofa=0) {
-	for (; tr[x].fa != tofa; rotate(x))
-		if (tr[tr[x].fa].fa != tofa)
-			rotate(getlr(x) ^ getlr(tr[x].fa) ? x : tr[x].fa);
-	update(x);
-	if (!tofa) root = x;
-}
-
-void insert(int num) {
-	int x = root, y = 0;
-	while (x && tr[x].num != num)
-		y = x, x = tr[x].ch[num > tr[x].num];
-	if (x) ++tr[x].cnt;
-	else connect(y, num > tr[y].num, x = newNode(num));
-	splay(x);
-}
-
-
-void find(int num) {  // 此题保证num一定存在 
-	int x = root;
-	while (tr[x].num != num && tr[x].ch[num > tr[x].num])
-	// 因为find还可能用在找前驱后继里，所以要加后面的判断 
-		x = tr[x].ch[num > tr[x].num];
-	splay(x);
-}
-
-int nop(int num, bool np) {  // 0前驱1后继，返回目标结点编号 
-	find(num);
-	if (tr[root].num != num && (tr[root].num > num) == np)
-		return root;
-	int x = tr[root].ch[np];
-	while (tr[x].ch[!np])
-		x = tr[x].ch[!np];
-	return x;
-}
-
-void del(int num) {
-	int pre = nop(num, 0), next = nop(num, 1);
-	splay(pre); splay(next, pre);
-	int x = tr[next].ch[0];
-	if (--tr[x].cnt) splay(x);
-	else connect(next, 0, 0), splay(next, 0);
-}
-
-int rank(int num) {
-	find(num);
-	return tr[tr[root].ch[0]].size;
-}
-
-int kth(int k) {
-	++k;
-	int x = root;
-	while (x) {
-		int lsize = tr[tr[x].ch[0]].size;
-		if (k > lsize && k <= lsize + tr[x].cnt) {
-			splay(x);
-			return tr[x].num;
-		}
-		if (k <= lsize) x = tr[x].ch[0];
-		else k -= lsize + tr[x].cnt, x = tr[x].ch[1];
-	}
-}
-
-int nextOrPre(int num, bool np) {
-	splay(nop(num, np));
-	return tr[root].num;
-}
-
-int main() {
-	int m;
-	scanf("%d", &m);
-	insert(-INF); insert(INF);
-	for (int opt, x; m--; ) {
-		scanf("%d%d", &opt, &x);
-		switch (opt) {
-			case 1: insert(x); break;
-			case 2: del(x); break;
-			case 3: printf("%d\n", rank(x)); break;
-			case 4: printf("%d\n", kth(x)); break;
-			default: printf("%d\n", nextOrPre(x, opt - 5));
-		}
-	}
+int n,ask,fri;
+vector <int> Epic;
+int main()
+{
+    Read(n);
+    for(int i=1;i<=n;i++)
+    {
+        Read(ask); Read(fri);
+        if(ask==1)//insert：在合适的位置插入一个值
+            Epic.insert(upper_bound(Epic.begin(),Epic.end(),fri),fri);//upper_bound(a,b,c)是区间[a,b]中第一个大于等于c的值得下标
+        else if(ask==2)//erase：擦去这个值
+            Epic.erase(lower_bound(Epic.begin(),Epic.end(),fri));
+        else if(ask==3)//输出一个大于等于它的下标（也就是排名）
+            printf("%d\n",lower_bound(Epic.begin(),Epic.end(),fri)-Epic.begin()+1);
+        else if(ask==4)//输出排名对应的值
+            printf("%d\n",Epic[fri-1]);
+        else if(ask==5)//求前驱和后继，注意*，返回的是值
+            printf("%d\n",*--lower_bound(Epic.begin(),Epic.end(),fri));
+        else printf("%d\n",*upper_bound(Epic.begin(),Epic.end(),fri));
+    }
     return 0;
 }
-

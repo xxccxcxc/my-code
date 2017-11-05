@@ -1,64 +1,54 @@
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 #include <cstdlib>
-#include <cstdio>
 #include <cstring>
+#include <cstdio>
+#include <vector>
 using namespace std;
 const int N = 10050, M = 10050;
-struct Edge
-{
-    int to, w, next;
-}edge[M*4];
-int e, head[N];
+
+struct Edge {
+	int to, w, nxt;
+	Edge(int _to=0, int _w=0, int _nxt=-1): to(_to), w(_w), nxt(_nxt) {}
+}e[M*3];
+int ecnt, head[N];
 int dis[N];
 bool vis[N];
-void add1(int u, int v, int w)
-{
-    edge[e].to = v;
-    edge[e].w = w;
-    edge[e].next = head[u];
-    head[u] = e++;
+
+void add(int u, int v, int w) {
+	e[ecnt] = Edge(v, w, head[u]);
+	head[u] = ecnt++;
 }
-bool dfs(int u)
-{
-    vis[u] = true;
-    for (int i = head[u]; ~i; i = edge[i].next)
-    {
-        int v = edge[i].to;
-        if (dis[u] + edge[i].w < dis[v])
-        {
-            dis[v] = dis[u] + edge[i].w;
-            if (vis[v] || dfs(v))
-                return true;
-        }
-    }
-    vis[u] = false;
-    return false;
+
+bool spfa(int u) {
+	vis[u] = true;
+	for (int i = head[u]; ~i; i = e[i].nxt) {
+		int v = e[i].to;
+		if (dis[u] + e[i].w < dis[v]) {
+			dis[v] = dis[u] + e[i].w;
+			if (vis[v] || spfa(v)) return true;
+		}
+	}
+	vis[u] = false;
+	return false;
 }
-int main()
-{
-    memset(head, -1, sizeof(head));
-    int n, m;
-    cin >> n >> m;
-    while (m--)
-    {
-        int p, a, b;
-        cin >> p >> a >> b;
-        if (p <= 2)
-        {
-            int c;
-            cin >> c;
-            if (p == 1) add1(b, a, -c);
-            else add1(a, b, c);
-        }
-        else add1(a, b, 0), add1(b, a, 0);
-    }
-    for (int i = 1; i <= n; i++)
-        add1(0, i, 0);
-    memset(dis, 0x3f, sizeof(dis));
-    dis[0] = 0; 
-    if (dfs(0)) cout << "No" << endl;
-    else cout << "Yes" << endl;
+
+int main() {
+	memset(head, -1, sizeof(head));
+	int n, m;
+	scanf("%d%d", &n, &m);
+	for (int opt, u, v, w; m--; ) {
+		scanf("%d%d%d", &opt, &u, &v);
+		if (opt <= 2) {
+			scanf("%d", &w);
+			if (opt == 1) add(u, v, -w);
+			else add(v, u, w);
+		}
+		else add(u, v, 0), add(v, u, 0);
+	}
+	for (int i = 1; i <= n; i++) add(0, i, 0);
+	memset(dis, 0x3f, sizeof(dis)); dis[0] = 0;
+	printf(spfa(0) ? "No\n" : "Yes\n");
     return 0;
 }
 

@@ -1,28 +1,15 @@
 #include <iostream>
 #include <algorithm>
-#include <cstdio>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 using namespace std;
-typedef long long LL;
-LL x, y, g;
-void exgcd(LL a, LL b) {
-    if (!b) {
-        x = 1;
-        y = 0;
-        g = a;
-        return;
-    }
-    exgcd(b, a%b);
-    int tmp = x;
-    x = y;
-    y = tmp-a/b*y;
-}
+void exgcd(int a, int b, int &x, int &y) { b ? (exgcd(b, a%b, y, x), y -= a / b * x) : (x = 1, y = 0); }
 int main() {
-    LL a, b;
-    cin >> a >> b;
-    exgcd(a, b);
-    cout << (x%b+b)%b << endl;
-    return 0;
+	int a, b, x, y;
+	cin >> a >> b;
+	exgcd(a, b, x, y);
+	cout << (x % b + b) % b << endl;
+	return 0;
 }
 
