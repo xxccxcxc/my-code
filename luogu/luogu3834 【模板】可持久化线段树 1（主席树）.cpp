@@ -1,50 +1,43 @@
 #include <iostream>
+#include <algorithm>
 #include <cstdlib>
 #include <cstdio>
-#include <algorithm>
+#include <cstring>
 using namespace std;
-const int MAXN = 200050, L = -1e9, R = 1e9;
-struct Node
-{
-    int ls, rs, sum;
-    Node(): ls(0), rs(0), sum(0){}
-}node[MAXN * 40];
-int top = 1, root[MAXN];
+const int N = 200050, INF = 1e9;
 
-void insert(int x, int pre, int &cur, int l, int r)
-{
-    node[cur = top++] = node[pre];
-    ++node[cur].sum;
-    if (l == r) return;
-    int mid = (l+r)>>1;
-    if (x <= mid) insert(x, node[pre].ls, node[cur].ls, l, mid);
-    else insert(x, node[pre].rs, node[cur].rs, mid+1, r);
+struct Node {
+	int ls, rs, sum;
+	Node(): ls(0), rs(0), sum(0) {}
+}tr[N*40];
+int top = 1, root[N];
+
+void insert(int &cur, int pre, int val, int L, int R) {
+	(tr[cur = top++] = tr[pre]).sum++;
+	if (L == R) return;
+	int mid = (L + R) >> 1;
+	if (val <= mid) insert(tr[cur].ls, tr[pre].ls, val, L, mid);
+	else insert(tr[cur].rs, tr[pre].rs, val, mid + 1, R);
 }
 
-int query(int lNode, int rNode, int l, int r, int k)
-{
-    if (l == r) return l;
-    int lCnt = node[node[rNode].ls].sum - node[node[lNode].ls].sum, mid = (l+r)>>1;
-    if (k <= lCnt) return query(node[lNode].ls, node[rNode].ls, l, mid, k);
-    else return query(node[lNode].rs, node[rNode].rs, mid+1, r, k-lCnt);
+int kth(int lu, int ru, int L, int R, int k) {
+	if (L == R) return L;
+	int lCnt = tr[tr[ru].ls].sum - tr[tr[lu].ls].sum, mid = (L + R) >> 1;
+	if (k <= lCnt) return kth(tr[lu].ls, tr[ru].ls, L, mid, k);
+	return kth(tr[lu].rs, tr[ru].rs, mid + 1, R, k - lCnt);
 }
 
-int main()
-{
-    int n, m;
-    scanf("%d%d", &n, &m);
-    for (int i = 1; i <= n; i++)
-    {
-        int sr;
-        scanf("%d", &sr);
-        insert(sr, root[i-1], root[i], L, R);
-    }
-    while (m--)
-    {
-        int l, r, k;
-        scanf("%d%d%d", &l, &r, &k);
-        printf("%d\n", query(root[l-1], root[r], L, R, k));
-    }
-    return 0;
+int main() {
+	int n, m;
+	scanf("%d%d", &n, &m);
+	for (int t, i = 1; i <= n; i++) {
+		scanf("%d", &t);
+		insert(root[i], root[i-1], t, -INF, INF);
+	}
+	for (int l, r, k; m--; ) {
+		scanf("%d%d%d", &l, &r, &k);
+		printf("%d\n", kth(root[l-1], root[r], -INF, INF, k));
+	}
+	return 0;
 }
 
